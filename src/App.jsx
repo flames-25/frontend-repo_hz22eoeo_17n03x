@@ -1,102 +1,147 @@
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import ModelCard from "./components/ModelCard";
-import Dealers from "./components/Dealers";
-import Footer from "./components/Footer";
+import React, { useMemo, useState } from 'react';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import ModelCard from './components/ModelCard';
+import Dealers from './components/Dealers';
+import Footer from './components/Footer';
 
-const models = [
+const ALL_MODELS = [
   {
-    name: "BMW 2 Series Gran Coupé",
-    image: "https://images.unsplash.com/photo-1549924231-f129b911e442?q=80&w=1600&auto=format&fit=crop",
-    price: "₹43.90 Lakh",
-    fuel: "Petrol/Diesel",
-    power: "Up to 190 hp",
+    name: 'BMW 2 Series Gran Coupe',
+    price: '₹ 43.5L',
+    fuel: 'Petrol',
+    power: '190 hp',
+    mileage: '14–18 km/l',
+    type: 'Sedan',
+    image: 'https://images.unsplash.com/photo-1653751749083-63c81f5f3d00?ixid=M3w3OTkxMTl8MHwxfHNlYXJjaHwxfHxCTVclMjAzJTIwU2VyaWVzfGVufDB8MHx8fDE3NjI3NjE0NDV8MA&ixlib=rb-4.1.0&w=1600&auto=format&fit=crop&q=80',
   },
   {
-    name: "BMW 3 Series",
-    image: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=1600&auto=format&fit=crop",
-    price: "₹72.90 Lakh",
-    fuel: "Petrol",
-    power: "Up to 255 hp",
+    name: 'BMW 3 Series',
+    price: '₹ 72.9L',
+    fuel: 'Petrol',
+    power: '258 hp',
+    mileage: '13–16 km/l',
+    type: 'Sedan',
+    image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?q=80&w=1600&auto=format&fit=crop',
   },
   {
-    name: "BMW X1",
-    image: "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=1600&auto=format&fit=crop",
-    price: "₹49.50 Lakh",
-    fuel: "Petrol/Diesel",
-    power: "Up to 192 hp",
+    name: 'BMW 5 Series',
+    price: '₹ 89.9L',
+    fuel: 'Petrol',
+    power: '255 hp',
+    mileage: '12–15 km/l',
+    type: 'Sedan',
+    image: 'https://images.unsplash.com/photo-1627936354732-ffbe552799d8?ixid=M3w3OTkxMTl8MHwxfHNlYXJjaHwxfHxCTVclMjA3JTIwU2VyaWVzfGVufDB8MHx8fDE3NjI3NjExNjB8MA&ixlib=rb-4.1.0&w=1600&auto=format&fit=crop&q=80',
   },
   {
-    name: "BMW X3",
-    image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=1600&auto=format&fit=crop",
-    price: "₹68.50 Lakh",
-    fuel: "Diesel",
-    power: "Up to 190 hp",
+    name: 'BMW 7 Series',
+    price: '₹ 1.8Cr',
+    fuel: 'Petrol',
+    power: '375 hp',
+    mileage: '9–12 km/l',
+    type: 'Sedan',
+    image: 'https://images.unsplash.com/photo-1677517859847-0e750bfd13a9?ixid=M3w3OTkxMTl8MHwxfHNlYXJjaHwxfHxCTVclMjBYMXxlbnwwfDB8fHwxNzYyNzYxNDQ2fDA&ixlib=rb-4.1.0&w=1600&auto=format&fit=crop&q=80',
   },
   {
-    name: "BMW 5 Series",
-    image: "https://images.unsplash.com/photo-1549923746-c502d488b3ea?q=80&w=1600&auto=format&fit=crop",
-    price: "₹65.00 Lakh",
-    fuel: "Petrol",
-    power: "Up to 255 hp",
+    name: 'BMW X1',
+    price: '₹ 49.5L',
+    fuel: 'Diesel',
+    power: '150 hp',
+    mileage: '16–20 km/l',
+    type: 'SUV',
+    image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=1600&auto=format&fit=crop',
   },
   {
-    name: "BMW 7 Series",
-    image: "https://images.unsplash.com/photo-1627936354732-ffbe552799d8?ixid=M3w3OTkxMTl8MHwxfHNlYXJjaHwxfHxCTVclMjA3JTIwU2VyaWVzfGVufDB8MHx8fDE3NjI3NjExNjB8MA&ixlib=rb-4.1.0&w=1600&auto=format&fit=crop&q=80",
-    price: "₹1.70 Crore",
-    fuel: "Petrol",
-    power: "Up to 375 hp",
+    name: 'BMW X3',
+    price: '₹ 68.5L',
+    fuel: 'Diesel',
+    power: '190 hp',
+    mileage: '14–18 km/l',
+    type: 'SUV',
+    image: 'https://images.unsplash.com/photo-1727994832515-7888b6edd884?ixid=M3w3OTkxMTl8MHwxfHNlYXJjaHwxfHxCTVclMjBpNHxlbnwwfDB8fHwxNzYyNzYxNDQ2fDA&ixlib=rb-4.1.0&w=1600&auto=format&fit=crop&q=80',
   },
   {
-    name: "BMW iX (Electric)",
-    image: "https://images.unsplash.com/photo-1687362438620-b2f0c0faddb0?ixid=M3w3OTkxMTl8MHwxfHNlYXJjaHwxfHxCTVclMjBpWCUyMCUyOEVsZWN0cmljJTI5fGVufDB8MHx8fDE3NjI3NjExNjF8MA&ixlib=rb-4.1.0&w=1600&auto=format&fit=crop&q=80",
-    price: "₹1.21 Crore",
-    fuel: "Electric",
-    power: "xDrive40",
+    name: 'BMW i4',
+    price: '₹ 72.5L',
+    fuel: 'Electric',
+    power: '335 hp',
+    mileage: '590 km range',
+    type: 'Electric',
+    image: 'https://images.unsplash.com/photo-1642189673400-2c5f1253af27?ixid=M3w3OTkxMTl8MHwxfHNlYXJjaHwxfHxCTVclMjBpWHxlbnwwfDB8fHwxNzYyNzYxNDQ3fDA&ixlib=rb-4.1.0&w=1600&auto=format&fit=crop&q=80',
   },
   {
-    name: "BMW M4 Competition",
-    image: "https://images.unsplash.com/photo-1728060838342-cb9744a27d1b?ixid=M3w3OTkxMTl8MHwxfHNlYXJjaHwxfHxCTVclMjBNNCUyMENvbXBldGl0aW9ufGVufDB8MHx8fDE3NjI3NjExNjF8MA&ixlib=rb-4.1.0&w=1600&auto=format&fit=crop&q=80",
-    price: "₹1.48 Crore",
-    fuel: "Petrol",
-    power: "510 hp",
+    name: 'BMW iX',
+    price: '₹ 1.2Cr',
+    fuel: 'Electric',
+    power: '516 hp',
+    mileage: '425 km range',
+    type: 'Electric',
+    image: 'https://images.unsplash.com/photo-1653751749083-63c81f5f3d00?ixid=M3w3OTkxMTl8MHwxfHNlYXJjaHwxfHxCTVclMjAzJTIwU2VyaWVzfGVufDB8MHx8fDE3NjI3NjE0NDV8MA&ixlib=rb-4.1.0&w=1600&auto=format&fit=crop&q=80',
   },
 ];
 
+const FILTERS = ['All', 'Sedan', 'SUV', 'Electric'];
+
 export default function App() {
-  const handleEnquire = (modelName) => {
-    const msg = `I'd like to know more about the ${modelName} in Hyderabad.`;
-    window.location.href = `mailto:sales@bmw-hyd.com?subject=Enquiry%20-%20${encodeURIComponent(modelName)}&body=${encodeURIComponent(msg)}`;
-  };
+  const [query, setQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState('All');
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return ALL_MODELS.filter((m) => {
+      const byQuery = !q || m.name.toLowerCase().includes(q);
+      const byType = activeFilter === 'All' || m.type === activeFilter;
+      return byQuery && byType;
+    });
+  }, [query, activeFilter]);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen bg-white text-gray-900">
       <Navbar />
       <Hero />
 
-      <main id="models" className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <p className="text-xs uppercase tracking-widest text-slate-500">Available Now</p>
-              <h2 className="text-2xl md:text-3xl font-semibold">BMW Models in Hyderabad</h2>
+      <main id="models" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Explore Models</h2>
+
+          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+            <div className="flex rounded-full border border-gray-300 overflow-hidden w-full sm:w-80">
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search models (e.g., X1, 3 Series)"
+                className="w-full px-4 py-2 focus:outline-none"
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              {FILTERS.map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setActiveFilter(f)}
+                  className={`rounded-full px-4 py-2 text-sm border transition ${
+                    activeFilter === f
+                      ? 'bg-black text-white border-black'
+                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  {f}
+                </button>
+              ))}
             </div>
           </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {models.map((m) => (
-              <ModelCard
-                key={m.name}
-                name={m.name}
-                image={m.image}
-                price={m.price}
-                fuel={m.fuel}
-                power={m.power}
-                onEnquire={() => handleEnquire(m.name)}
-              />
-            ))}
-          </div>
         </div>
+
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.map((m) => (
+            <ModelCard key={m.name} model={m} />
+          ))}
+        </div>
+
+        {filtered.length === 0 && (
+          <div className="mt-10 text-center text-gray-500">No models match your search.</div>
+        )}
       </main>
 
       <Dealers />
